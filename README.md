@@ -50,5 +50,5 @@ Vercel: Ideal para Next.js, oferecendo integração completa, builds otimizados 
 GitHub Actions: Para automação de deploys, integração com testes e linting, e monitoramento contínuo da aplicação.
 
 <!-- TODO BACK -->
--> [] - Fazer Reports retornar da API em JSON
--> [] - Fazer buscas por cliente (TBD)
+- [] -> Fazer Reports retornar da API em JSON
+- [] -> Fazer buscas por cliente (TBD)
