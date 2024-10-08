@@ -1,5 +1,11 @@
 import { Button } from "@/components/Button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/Dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/Dialog";
 import { Input } from "@/components/Input";
 import { Label } from "@/components/Label";
 import { Edit } from "lucide-react";
@@ -20,11 +26,11 @@ export function EditTransactionDialog({
   item,
   handleEdit,
   editingItem,
-  handleSaveEdit
+  handleSaveEdit,
 }: EditTransactionDialogProps) {
   return (
     <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button variant="outline" size="icon" onClick={() => handleEdit(item)}>
           <Edit className="h-4 w-4" />
         </Button>
@@ -61,11 +67,18 @@ export function EditTransactionDialog({
             </div>
           </div>
           <div className="flex justify-end space-x-2">
-            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>Cancelar</Button>
-            <Button onClick={() => editingItem && handleSaveEdit(editingItem)}>Salvar</Button>
+            <Button
+              variant="outline"
+              onClick={() => setIsEditDialogOpen(false)}
+            >
+              Cancelar
+            </Button>
+            <Button onClick={() => editingItem && handleSaveEdit(editingItem)}>
+              Salvar
+            </Button>
           </div>
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

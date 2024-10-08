@@ -1,39 +1,50 @@
-"use client"
+"use client";
 
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/Pagination"
-import { ArrowBigLeft } from "lucide-react"
-import Link from "next/link"
-import { useState } from 'react'
-import { CalendarInterval } from "./components/CalendarInterval"
-import { GenerateReportDialog } from "./components/GenerateReportDialog"
-import { RemoveItensConfirmation } from "./components/RemoveItensConfirmation"
-import { TransactionsTable } from "./components/Table"
-import { UploadDialog } from "./components/UploadDialog"
-import { data } from "./data"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/Pagination";
+import { ArrowBigLeft } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { CalendarInterval } from "./components/CalendarInterval";
+import { GenerateReportDialog } from "./components/GenerateReportDialog";
+import { RemoveItensConfirmation } from "./components/RemoveItensConfirmation";
+import { TransactionsTable } from "./components/Table";
+import { UploadDialog } from "./components/UploadDialog";
+import { data } from "./data";
 
 export interface Item {
-  id: number
-  nome: string
-  email: string
-  telefone: string
-  endereco: string
-  cidade: string
-  estado: string
+  id: number;
+  nome: string;
+  email: string;
+  telefone: string;
+  endereco: string;
+  cidade: string;
+  estado: string;
 }
 
 export default function TransactionsList() {
-  const [items, setItems] = useState<Item[]>(data)
-  const [dateRange, setDateRange] = useState<{ from: Date | undefined; to: Date | undefined }>({ from: undefined, to: undefined })
-  const [selectedItems, setSelectedItems] = useState<number[]>([])
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false)
-  const [isReportDialogOpen, setIsReportDialogOpen] = useState(false)
+  const [items, setItems] = useState<Item[]>(data);
+  const [dateRange, setDateRange] = useState<{
+    from: Date | undefined;
+    to: Date | undefined;
+  }>({ from: undefined, to: undefined });
+  const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+  const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
 
   const handleDeleteSelected = () => {
-    setItems(items.filter(item => !selectedItems.includes(item.id)))
-    setSelectedItems([])
-    setIsDeleteDialogOpen(false)
-  }
+    setItems(items.filter((item) => !selectedItems.includes(item.id)));
+    setSelectedItems([]);
+    setIsDeleteDialogOpen(false);
+  };
 
   return (
     <div className="container mx-auto p-8 border rounded-md my-[2%] bg-white">
@@ -44,10 +55,7 @@ export default function TransactionsList() {
         <h1 className="text-2xl font-bold">Listagem de Itens</h1>
       </div>
       <div className="flex justify-between items-end mb-4">
-        <CalendarInterval
-          dateRange={dateRange}
-          setDateRange={setDateRange}
-        />
+        <CalendarInterval dateRange={dateRange} setDateRange={setDateRange} />
         <div className="space-x-2 flex items-center">
           {selectedItems.length > 0 && (
             <RemoveItensConfirmation
@@ -98,5 +106,5 @@ export default function TransactionsList() {
         </Pagination>
       </div>
     </div>
-  )
+  );
 }

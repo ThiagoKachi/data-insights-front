@@ -15,7 +15,7 @@ export function RemoveItensConfirmation({
   return (
     <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
       <DialogTrigger asChild>
-        <Button variant="destructive">Excluir Tudo</Button>
+        <Button variant="destructive">Excluir</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

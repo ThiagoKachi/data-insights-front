@@ -4,7 +4,7 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "@/components/Dialog";
 import {
   Table,
@@ -60,7 +60,7 @@ export function TransactionsTable({
 
   const handleSaveEdit = (editedItem: Item) => {
     setItems(
-      items.map((item) => (item.id === editedItem.id ? editedItem : item))
+      items.map((item) => (item.id === editedItem.id ? editedItem : item)),
     );
     setEditingItem(null);
     setIsEditDialogOpen(false);

@@ -6,17 +6,20 @@ import { CalendarIcon } from "lucide-react";
 
 interface CalendarIntervalProps {
   dateRange: { from: Date | undefined; to: Date | undefined };
-  setDateRange: React.Dispatch<React.SetStateAction<{ from: Date | undefined; to: Date | undefined }>>;
+  setDateRange: React.Dispatch<
+    React.SetStateAction<{ from: Date | undefined; to: Date | undefined }>
+  >;
 }
 
-export function CalendarInterval({ dateRange, setDateRange }: CalendarIntervalProps) {
+export function CalendarInterval({
+  dateRange,
+  setDateRange,
+}: CalendarIntervalProps) {
   return (
     <div className="flex items-center space-x-2">
       <Popover>
         <div className="flex flex-col">
-          <small className="font-medium text-zinc-500">
-            Filtrar por data:
-          </small>
+          <small className="font-medium text-zinc-500">Filtrar por data:</small>
           <PopoverTrigger asChild>
             <Button
               variant={"outline"}
@@ -50,5 +53,5 @@ export function CalendarInterval({ dateRange, setDateRange }: CalendarIntervalPr
         </div>
       </Popover>
     </div>
-  )
+  );
 }
