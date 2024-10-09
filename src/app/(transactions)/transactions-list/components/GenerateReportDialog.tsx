@@ -1,20 +1,28 @@
-import { Button } from "@/components/Button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/Dialog"
-import { Input } from "@/components/Input"
-import { Label } from "@/components/Label"
+import { Button } from "@/components/Button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/Dialog";
+import { Input } from "@/components/Input";
+import { Label } from "@/components/Label";
 
 interface GenerateReportDialogProps {
-  isReportDialogOpen: boolean
-  setIsReportDialogOpen: (open: boolean) => void
+  isReportDialogOpen: boolean;
+  setIsReportDialogOpen: (open: boolean) => void;
+  disabled?: boolean;
 }
 
 export function GenerateReportDialog({
   isReportDialogOpen,
-  setIsReportDialogOpen
+  setIsReportDialogOpen,
+  disabled,
 }: GenerateReportDialogProps) {
   return (
     <Dialog open={isReportDialogOpen} onOpenChange={setIsReportDialogOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild disabled={disabled}>
         <Button>Gerar Relatório</Button>
       </DialogTrigger>
       <DialogContent>
@@ -33,11 +41,16 @@ export function GenerateReportDialog({
             </div>
           </div>
           <div className="flex justify-end space-x-2">
-            <Button variant="outline" onClick={() => setIsReportDialogOpen(false)}>Cancelar</Button>
+            <Button
+              variant="outline"
+              onClick={() => setIsReportDialogOpen(false)}
+            >
+              Cancelar
+            </Button>
             <Button>Gerar</Button>
           </div>
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

@@ -1,20 +1,28 @@
-import { Button } from "@/components/Button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/Dialog"
-import { Input } from "@/components/Input"
-import { Upload } from "lucide-react"
+import { Button } from "@/components/Button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/Dialog";
+import { Input } from "@/components/Input";
+import { Upload } from "lucide-react";
 
 interface UploadDialogProps {
-  isUploadDialogOpen: boolean
-  setIsUploadDialogOpen: (open: boolean) => void
+  isUploadDialogOpen: boolean;
+  setIsUploadDialogOpen: (open: boolean) => void;
+  disabled?: boolean;
 }
 
 export function UploadDialog({
   isUploadDialogOpen,
-  setIsUploadDialogOpen
+  setIsUploadDialogOpen,
+  disabled,
 }: UploadDialogProps) {
   return (
     <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild disabled={disabled}>
         <Button>
           <Upload className="mr-2 h-4 w-4" />
           Upload
@@ -26,10 +34,15 @@ export function UploadDialog({
         </DialogHeader>
         <Input type="file" />
         <div className="flex justify-end space-x-2 mt-4">
-          <Button variant="outline" onClick={() => setIsUploadDialogOpen(false)}>Cancelar</Button>
+          <Button
+            variant="outline"
+            onClick={() => setIsUploadDialogOpen(false)}
+          >
+            Cancelar
+          </Button>
           <Button>Fazer Upload</Button>
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

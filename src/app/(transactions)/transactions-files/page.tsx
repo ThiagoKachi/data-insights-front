@@ -1,12 +1,8 @@
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/Pagination";
+"use client";
+
+import { IFiles } from "@/@types/Files";
+import { IPagination } from "@/@types/Pagination";
+import { PaginationComponent } from "@/components/PaginationComponent";
 import {
   Table,
   TableBody,
@@ -15,69 +11,43 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/Table";
+import { fetchTransactionsFiles } from "@/utils/actions/getFileTransactions";
+import { formatDate } from "@/utils/formatDate";
 import { ArrowBigLeft } from "lucide-react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
-async function fetchProducts() {
-  // Simula um atraso de 5 segundos
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return ["Product 1", "Product 2", "Product 3"];
-}
+export default function TransactionsFilesList() {
+  const [data, setData] = useState<IFiles[]>([]);
+  const [pagination, setPagination] = useState<IPagination>({} as IPagination);
 
-export default async function TransactionsFilesList() {
-  const products = await fetchProducts();
-  console.log(products);
+  const searchParams = useSearchParams();
+  const currentPage = searchParams.get("page") || 1;
 
-  const dados = [
-    {
-      id: 1,
-      nome: "Item 1",
-      categoria: "A",
-      preco: 10.99,
-      estoque: 100,
-      avaliacao: 4.5,
-      status: "Ativo",
-    },
-    {
-      id: 2,
-      nome: "Item 2",
-      categoria: "B",
-      preco: 15.99,
-      estoque: 50,
-      avaliacao: 3.8,
-      status: "Inativo",
-    },
-    {
-      id: 3,
-      nome: "Item 3",
-      categoria: "A",
-      preco: 8.99,
-      estoque: 75,
-      avaliacao: 4.2,
-      status: "Ativo",
-    },
-    {
-      id: 4,
-      nome: "Item 4",
-      categoria: "C",
-      preco: 12.99,
-      estoque: 25,
-      avaliacao: 4.0,
-      status: "Ativo",
-    },
-    {
-      id: 5,
-      nome: "Item 5",
-      categoria: "B",
-      preco: 9.99,
-      estoque: 60,
-      avaliacao: 3.5,
-      status: "Inativo",
-    },
-  ];
+  const fetchData = useCallback(async (page: number | null) => {
+    const { data, pagination } = await fetchTransactionsFiles(page as number);
+
+    setData(data);
+    setPagination(pagination);
+  }, []);
+
+  useEffect(() => {
+    fetchData(currentPage as number);
+  }, [fetchData, currentPage]);
+
+  const handleButtonClick = async (page: number | null) => {
+    if (page) {
+      const params = new URLSearchParams(window.location.search);
+      params.set("page", page.toString());
+      window.history.pushState({}, "", `${window.location.pathname}?${params}`);
+
+      fetchData(page);
+    }
+  };
 
   return (
-    <div className="container mx-auto p-8 border rounded-md my-[2%] bg-white">
+    <div className="mx-8 p-8 border rounded-md my-[2%] bg-white">
       <div className="flex items-center gap-2 mb-4 text-zinc-700">
         <Link href="/dashboard" className="text-sm font-medium">
           <ArrowBigLeft className="h-6 w-6" />
@@ -87,58 +57,45 @@ export default async function TransactionsFilesList() {
       <Table className="border">
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[150px]">Link</TableHead>
             <TableHead>Nome</TableHead>
-            <TableHead>Categoria</TableHead>
-            <TableHead>Preço</TableHead>
-            <TableHead>Estoque</TableHead>
-            <TableHead>Avaliação</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>Quantidade</TableHead>
+            <TableHead>Data</TableHead>
+            <TableHead>Usuário</TableHead>
+            <TableHead className="w-[150px]">Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {dados.map((item) => (
-            <TableRow key={item.id}>
+          {data?.map((file) => (
+            <TableRow key={file.id}>
+              <TableCell>{file.file_name}</TableCell>
+              <TableCell>{file.transactions_quantity}</TableCell>
+              <TableCell>{formatDate(file.created_at)}</TableCell>
+              <TableCell>
+                <div className="flex flex-col gap-1">
+                  {file.name}
+                  <span className="text-xs font-medium text-zinc-500">
+                    {file.email}
+                  </span>
+                </div>
+              </TableCell>
               <TableCell>
                 <Link
-                  href={`/item/${item.id}`}
+                  href={`/transactions-list/1`}
                   className="text-blue-600 hover:underline"
                 >
                   Ver detalhes
                 </Link>
               </TableCell>
-              <TableCell>{item.nome}</TableCell>
-              <TableCell>{item.categoria}</TableCell>
-              <TableCell>R$ {item.preco.toFixed(2)}</TableCell>
-              <TableCell>{item.estoque}</TableCell>
-              <TableCell>{item.avaliacao.toFixed(1)}</TableCell>
-              <TableCell>{item.status}</TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
 
-      <div className="mt-2 text-zinc-600">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious href="#" />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">1</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationLink href="#">2</PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            <PaginationItem>
-              <PaginationNext href="#" />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
+      <PaginationComponent
+        currentPage={Number(currentPage)}
+        handleButtonClick={handleButtonClick}
+        pagination={pagination}
+      />
     </div>
   );
 }

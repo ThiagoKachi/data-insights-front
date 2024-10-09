@@ -1,11 +1,6 @@
-import { Button } from "@/components/Button";
+import { ITransaction } from "@/@types/Transaction";
+import { Badge } from "@/components/Badge";
 import { Checkbox } from "@/components/Checkbox";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/Dialog";
 import {
   Table,
   TableBody,
@@ -14,16 +9,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/Table";
-import { Trash2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { decodePaymentMethod } from "@/utils/decodePaymentMethod";
+import { formatCurrency } from "@/utils/formatCurrenct";
+import { formatDate } from "@/utils/formatDate";
 import { useState } from "react";
-import { Item } from "../page";
 import { EditTransactionDialog } from "./EditTransactionDialog";
 
 interface TableProps {
-  items: Item[];
-  setItems: (items: Item[]) => void;
-  selectedItems: number[];
-  setSelectedItems: (selectedItems: number[]) => void;
+  items: ITransaction[];
+  setItems: (items: ITransaction[]) => void;
+  selectedItems: string[];
+  setSelectedItems: (selectedItems: string[]) => void;
 }
 
 export function TransactionsTable({
@@ -33,9 +30,7 @@ export function TransactionsTable({
   setSelectedItems,
 }: TableProps) {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [isDeleteItemDialogOpen, setIsDeleteItemDialogOpen] = useState(false);
-  const [editingItem, setEditingItem] = useState<Item | null>(null);
-  const [deletingItem, setDeletingItem] = useState<Item | null>(null);
+  const [editingItem, setEditingItem] = useState<ITransaction | null>(null);
 
   const handleSelectAll = (checked: boolean) => {
     if (checked) {
@@ -45,7 +40,7 @@ export function TransactionsTable({
     }
   };
 
-  const handleSelectItem = (id: number, checked: boolean) => {
+  const handleSelectItem = (id: string, checked: boolean) => {
     if (checked) {
       setSelectedItems([...selectedItems, id]);
     } else {
@@ -53,23 +48,17 @@ export function TransactionsTable({
     }
   };
 
-  const handleEdit = (item: Item) => {
+  const handleEdit = (item: ITransaction) => {
     setEditingItem(item);
     setIsEditDialogOpen(true);
   };
 
-  const handleSaveEdit = (editedItem: Item) => {
+  const handleSaveEdit = (editedItem: ITransaction) => {
     setItems(
       items.map((item) => (item.id === editedItem.id ? editedItem : item)),
     );
     setEditingItem(null);
     setIsEditDialogOpen(false);
-  };
-
-  const handleDelete = (id: number) => {
-    setItems(items.filter((item) => item.id !== id));
-    setDeletingItem(null);
-    setIsDeleteItemDialogOpen(false);
   };
 
   return (
@@ -83,12 +72,14 @@ export function TransactionsTable({
                 onCheckedChange={handleSelectAll}
               />
             </TableHead>
-            <TableHead>Nome</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Telefone</TableHead>
-            <TableHead>Endereço</TableHead>
-            <TableHead>Cidade</TableHead>
-            <TableHead>Estado</TableHead>
+            <TableHead>Cliente</TableHead>
+            <TableHead>Tipo</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Data</TableHead>
+            <TableHead>Valor</TableHead>
+            <TableHead>Taxas</TableHead>
+            <TableHead>Método de Pagamento</TableHead>
+            <TableHead>Responsável</TableHead>
             <TableHead>Ações</TableHead>
           </TableRow>
         </TableHeader>
@@ -103,12 +94,38 @@ export function TransactionsTable({
                   }
                 />
               </TableCell>
-              <TableCell>{item.nome}</TableCell>
-              <TableCell>{item.email}</TableCell>
-              <TableCell>{item.telefone}</TableCell>
-              <TableCell>{item.endereco}</TableCell>
-              <TableCell>{item.cidade}</TableCell>
-              <TableCell>{item.estado}</TableCell>
+              <TableCell>{item.entity}</TableCell>
+              <TableCell
+                className={cn(
+                  "font-semibold",
+                  item.type === "income" ? "text-green-500" : "text-red-500",
+                )}
+              >
+                {item.type === "income" ? "Receita" : "Despesa"}
+              </TableCell>
+              <TableCell className="">
+                <Badge
+                  className="text-xs"
+                  variant={
+                    item.status === "paid"
+                      ? "paid"
+                      : item.status === "canceled"
+                        ? "canceled"
+                        : "pending"
+                  }
+                >
+                  {item.status === "paid"
+                    ? "Pago"
+                    : item.status === "canceled"
+                      ? "Cancelado"
+                      : "Pendente"}
+                </Badge>
+              </TableCell>
+              <TableCell>{formatDate(item.transaction_date)}</TableCell>
+              <TableCell>{formatCurrency(item.value)}</TableCell>
+              <TableCell>{formatCurrency(item.taxes)}</TableCell>
+              <TableCell>{decodePaymentMethod(item.payment_method)}</TableCell>
+              <TableCell>{item.responsible}</TableCell>
               <TableCell>
                 <div className="flex space-x-2">
                   <EditTransactionDialog
@@ -119,46 +136,12 @@ export function TransactionsTable({
                     editingItem={editingItem}
                     handleSaveEdit={handleSaveEdit}
                   />
-
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setIsDeleteItemDialogOpen(true)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
                 </div>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-
-      <Dialog
-        open={isDeleteItemDialogOpen}
-        onOpenChange={setIsDeleteItemDialogOpen}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirmar exclusão</DialogTitle>
-          </DialogHeader>
-          <p>Tem certeza que deseja excluir o item {deletingItem?.nome}?</p>
-          <div className="flex justify-end space-x-2 mt-4">
-            <Button
-              variant="outline"
-              onClick={() => setIsDeleteItemDialogOpen(false)}
-            >
-              Cancelar
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={() => deletingItem && handleDelete(deletingItem.id)}
-            >
-              Confirmar
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }

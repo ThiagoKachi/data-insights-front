@@ -5,35 +5,37 @@ import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 
 interface CalendarIntervalProps {
-  dateRange: { from: Date | undefined; to: Date | undefined };
+  dateRange: { from: Date | any; to: Date | any };
   setDateRange: React.Dispatch<
-    React.SetStateAction<{ from: Date | undefined; to: Date | undefined }>
+    React.SetStateAction<{ from: Date | any; to: Date | any }>
   >;
+  disabled?: boolean;
 }
 
 export function CalendarInterval({
   dateRange,
   setDateRange,
+  disabled,
 }: CalendarIntervalProps) {
   return (
     <div className="flex items-center space-x-2">
       <Popover>
         <div className="flex flex-col">
           <small className="font-medium text-zinc-500">Filtrar por data:</small>
-          <PopoverTrigger asChild>
+          <PopoverTrigger asChild disabled={disabled}>
             <Button
               variant={"outline"}
-              className={`w-[300px] justify-start text-left font-normal ${!dateRange.from && "text-muted-foreground"}`}
+              className={`w-[300px] justify-start text-left font-normal ${!dateRange?.from && "text-muted-foreground"}`}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {dateRange.from ? (
-                dateRange.to ? (
+              {dateRange?.from ? (
+                dateRange?.to ? (
                   <>
-                    {format(dateRange.from, "LLL dd, y")} -{" "}
-                    {format(dateRange.to, "LLL dd, y")}
+                    {format(dateRange?.from, "LLL dd, y")} -{" "}
+                    {format(dateRange?.to, "LLL dd, y")}
                   </>
                 ) : (
-                  format(dateRange.from, "LLL dd, y")
+                  format(dateRange?.from, "LLL dd, y")
                 )
               ) : (
                 <span>Selecione um intervalo de datas</span>
@@ -44,7 +46,7 @@ export function CalendarInterval({
             <Calendar
               initialFocus
               mode="range"
-              defaultMonth={dateRange.from}
+              defaultMonth={dateRange?.from}
               selected={dateRange}
               onSelect={setDateRange}
               numberOfMonths={2}

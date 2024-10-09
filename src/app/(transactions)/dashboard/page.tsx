@@ -17,8 +17,6 @@ import {
   CardTitle,
 } from "@/components/Card";
 
-import { IPagination } from "@/@types/Pagination";
-import { ITransaction } from "@/@types/Transaction";
 import {
   Table,
   TableBody,
@@ -28,20 +26,12 @@ import {
   TableRow,
 } from "@/components/Table";
 import { cn } from "@/lib/utils";
-import { fetcher } from "@/utils/fetch";
+import { fetchTransactions } from "@/utils/actions/getTransactions";
 import { formatCurrency } from "@/utils/formatCurrenct";
 import { formatDate } from "@/utils/formatDate";
 
-async function fetchProducts() {
-  const transactions = await fetcher(
-    `${process.env.NEXT_PUBLIC_API_URL}/transactions?pageIndex=1&pageSize=10`,
-  );
-
-  return transactions as { data: ITransaction[]; pagination: IPagination };
-}
-
 export default async function Dashboard() {
-  const { data } = await fetchProducts();
+  const { data } = await fetchTransactions();
 
   return (
     <div className="flex min-h-screen w-full flex-col">
