@@ -1,3 +1,4 @@
+import { ITransaction } from "@/@types/Transaction";
 import { Button } from "@/components/Button";
 import {
   Dialog,
@@ -9,15 +10,14 @@ import {
 import { Input } from "@/components/Input";
 import { Label } from "@/components/Label";
 import { Edit } from "lucide-react";
-import { Item } from "../page";
 
 interface EditTransactionDialogProps {
   isEditDialogOpen: boolean;
   setIsEditDialogOpen: (open: boolean) => void;
-  item: Item;
-  handleEdit: (item: Item) => void;
-  editingItem: Item | null;
-  handleSaveEdit: (editedItem: Item) => void;
+  item: ITransaction;
+  handleEdit: (item: ITransaction) => void;
+  editingItem: ITransaction | null;
+  handleSaveEdit: (editedItem: ITransaction) => void;
 }
 
 export function EditTransactionDialog({
@@ -37,33 +37,33 @@ export function EditTransactionDialog({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Editar any</DialogTitle>
+          <DialogTitle>Editar transação</DialogTitle>
         </DialogHeader>
         <div className="grid gap-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="nome">Nome</Label>
-              <Input id="nome" defaultValue={editingItem?.nome} />
+              <Label htmlFor="nome">Responsável</Label>
+              <Input id="nome" defaultValue={editingItem?.entity} />
             </div>
             <div>
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" defaultValue={editingItem?.email} />
+              <Label htmlFor="email">Método de Pagamento</Label>
+              <Input id="email" defaultValue={editingItem?.value} />
             </div>
             <div>
-              <Label htmlFor="telefone">Telefone</Label>
-              <Input id="telefone" defaultValue={editingItem?.telefone} />
+              <Label htmlFor="telefone">Valor</Label>
+              <Input id="telefone" defaultValue={editingItem?.value} />
             </div>
             <div>
-              <Label htmlFor="endereco">Endereço</Label>
-              <Input id="endereco" defaultValue={editingItem?.endereco} />
+              <Label htmlFor="endereco">Taxas</Label>
+              <Input id="endereco" defaultValue={editingItem?.taxes} />
             </div>
             <div>
-              <Label htmlFor="cidade">Cidade</Label>
-              <Input id="cidade" defaultValue={editingItem?.cidade} />
+              <Label htmlFor="cidade">Status</Label>
+              <Input id="cidade" defaultValue={editingItem?.status} />
             </div>
             <div>
-              <Label htmlFor="estado">Estado</Label>
-              <Input id="estado" defaultValue={editingItem?.estado} />
+              <Label htmlFor="estado">Tipo</Label>
+              <Input id="estado" defaultValue={editingItem?.type} />
             </div>
           </div>
           <div className="flex justify-end space-x-2">
